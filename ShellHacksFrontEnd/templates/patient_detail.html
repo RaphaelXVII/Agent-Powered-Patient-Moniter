@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Details - {{ patient.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/static/css/style.css') }}">
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="header-content">
+            <div class="header-text">
+                <h1>Patient Details</h1>
+                <p>Detailed information for {{ patient.name }}</p>
+            </div>
+            <div class="user-info">
+                <button onclick="goBack()">← Back to Patients</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="patient-detail-section">
+        <div class="patient-detail-card">
+            <h2>{{ patient.name }}</h2>
+            <div class="patient-info-grid">
+                <div class="info-item">
+                    <label>Patient ID:</label>
+                    <span>{{ patient.id }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Age:</label>
+                    <span>{{ patient.age }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Condition:</label>
+                    <span>{{ patient.condition }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Last Visit:</label>
+                    <span>{{ patient.last_visit }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Floor:</label>
+                    <span>{{ patient.floor }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function goBack() {
+    window.location.href = '/patients';
+}
+
+</script>
+</body>
+</html>

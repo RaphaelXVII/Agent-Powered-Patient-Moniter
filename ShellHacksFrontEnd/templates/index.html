@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/static/css/style.css') }}">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Patient Manager</h1>
+        <p>"Transforming Lives through Tech & AI"</p>
+    </header>
+
+     <div class="login-section">
+         <div id="login-form" class="login-form">
+             <input type="text" id="username" placeholder="Username" required>
+             <input type="password" id="password" placeholder="Password" required>
+             <button onclick="handleLogin()">Login</button>
+         </div>
+         <div id="user-info" class="user-info" style="display: none;">
+             <span id="welcome-text">Welcome, <span id="current-user"></span>!</span>
+             <button onclick="handleLogout()">Logout</button>
+         </div>
+     </div>
+</div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='css/static/static/js/app.js') }}"></script>
+</body>
+</html>
