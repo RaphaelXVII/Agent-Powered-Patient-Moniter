@@ -99,9 +99,6 @@ function renderPatients(patients) {
         <div class="patient-card">
             <div class="patient-info">
                 <div class="patient-name">${patient.name}</div>
-                <div class="patient-details">
-                    Age: ${patient.age} | Condition: ${patient.condition} | Last Visit: ${patient.last_visit} | Floor: ${patient.floor}
-                </div>
                 <div class="ventilation-data">
                     <span class="respiratory-rate-value" data-status="${getRespiratoryStatus(patient.respiratory_rate)}">Respiratory Rate: ${patient.respiratory_rate} bpm</span>
                     <span class="airflow-value" data-status="${getAirflowStatus(patient.airflow)}">Airflow: ${patient.airflow}%</span>
@@ -136,14 +133,33 @@ function handleFloorFilter(event) {
     filterPatientsByFloor(selectedFloor);
 }
 
-function filterPatientsByFloor(floor) {
+function filterPatientsByFloor(filter) {
     // Get all patients from the current page
     const allPatients = window.allPatients || [];
     
-    if (floor === 'all') {
+    if (filter === 'all') {
         renderPatients(allPatients);
+    } else if (filter === 'critical') {
+        const criticalPatients = allPatients.filter(patient => 
+            getAirflowStatus(patient.airflow) === 'critical' || 
+            getRespiratoryStatus(patient.respiratory_rate) === 'critical'
+        );
+        renderPatients(criticalPatients);
+    } else if (filter === 'warning') {
+        const warningPatients = allPatients.filter(patient => 
+            getAirflowStatus(patient.airflow) === 'warning' || 
+            getRespiratoryStatus(patient.respiratory_rate) === 'warning'
+        );
+        renderPatients(warningPatients);
+    } else if (filter === 'normal') {
+        const normalPatients = allPatients.filter(patient => 
+            getAirflowStatus(patient.airflow) === 'normal' && 
+            getRespiratoryStatus(patient.respiratory_rate) === 'normal'
+        );
+        renderPatients(normalPatients);
     } else {
-        const filteredPatients = allPatients.filter(patient => patient.floor == floor);
+        // Filter by floor number
+        const filteredPatients = allPatients.filter(patient => patient.floor == filter);
         renderPatients(filteredPatients);
     }
 }
@@ -155,8 +171,8 @@ function startAirflowUpdates() {
         clearInterval(airflowUpdateInterval);
     }
     
-    // Update airflow values every 2 seconds
-    airflowUpdateInterval = setInterval(updateAirflowValues, 2000);
+    // Update airflow values every 15 seconds
+    airflowUpdateInterval = setInterval(updateAirflowValues, 15000);
 }
 
 function updateAirflowValues() {
@@ -169,12 +185,12 @@ function updateAirflowValues() {
         
         // Generate realistic airflow changes (-5 to +5 range)
         const airflowChange = Math.floor(Math.random() * 11) - 5; // -5 to +5
-        const newAirflow = Math.max(0, Math.min(100, patient.airflow + airflowChange));
+        const newAirflow = Math.max(1, Math.min(100, patient.airflow + airflowChange));
         patient.airflow = newAirflow;
         
         // Generate realistic respiratory rate changes (-3 to +3 range)
         const respiratoryChange = Math.floor(Math.random() * 7) - 3; // -3 to +3
-        const newRespiratoryRate = Math.max(8, Math.min(40, patient.respiratory_rate + respiratoryChange));
+        const newRespiratoryRate = Math.max(1, Math.min(40, patient.respiratory_rate + respiratoryChange));
         patient.respiratory_rate = newRespiratoryRate;
         
         // Check for critical conditions and create alerts
@@ -272,35 +288,14 @@ function showCriticalNotification(alert) {
     const notification = document.createElement('div');
     notification.className = alertClass;
     notification.innerHTML = `
-        <div class="notification-header">
+        <div class="notification-content">
             <div class="alert-icon">${alertIcon}</div>
-            <div class="alert-title">${urgency}</div>
+            <div class="alert-text">
+                <div class="alert-title">${urgency}</div>
+                <div class="patient-name">${alert.patient.name}</div>
+                <div class="metric-value">${metricText}: ${alert.value}${unit}</div>
+            </div>
             <button class="close-btn" onclick="closeNotification(${alert.id})">×</button>
-        </div>
-        <div class="notification-body">
-            <div class="patient-info">
-                <strong>Patient:</strong> ${alert.patient.name} (${alert.patient.id})
-            </div>
-            <div class="metric-info">
-                <strong>${metricText}:</strong> ${alert.value}${unit}
-            </div>
-            <div class="location-info">
-                <strong>Location:</strong> Floor ${alert.patient.floor}
-            </div>
-            <div class="condition-info">
-                <strong>Condition:</strong> ${alert.patient.condition}
-            </div>
-            <div class="severity-info">
-                <strong>Priority:</strong> ${isCritical ? 'URGENT CARE NEEDED' : 'Monitor Closely'}
-            </div>
-        </div>
-        <div class="notification-actions">
-            <button class="acknowledge-btn" onclick="acknowledgeAlert(${alert.id})">
-                ✓ Acknowledge Alert
-            </button>
-            <button class="view-patient-btn" onclick="viewPatient('${alert.patient.id}')">
-                👁️ View Patient
-            </button>
         </div>
     `;
     
