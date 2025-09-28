@@ -49,7 +49,7 @@ function handleLogin() {
         alert('Invalid username or password. Try: doctorHacks/shellhacks2025');
     }
 }
-
+// logout button directs user back to login page
 function handleLogout() {
     currentUser = null;
     // Clear stored username
@@ -57,7 +57,7 @@ function handleLogout() {
     // Redirect back to login page
     window.location.href = '/';
 }
-
+// displays user info
 function showUserInfo() {
     loginForm.style.display = 'none';
     userInfo.style.display = 'flex';
@@ -130,7 +130,7 @@ function viewPatient(patientId) {
 
 
 
-
+// functions for filtering out patients
 function handleFloorFilter(event) {
     const selectedFloor = event.target.value;
     filterPatientsByFloor(selectedFloor);

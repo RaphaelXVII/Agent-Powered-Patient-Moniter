@@ -1,23 +1,22 @@
-# 🤖 AI Patient Assistant
+# 🤖 Google Agent Powered Patient Manager
 
-A sophisticated AI-powered chat interface for patient management, built with Flask and SQLite database integration.
+A sophisticated AI-powered Agent chat interface powered by Googles Agent Development Kit for patient management, built with Flask and SQLite database integration.
 
 ## 🚀 Features
 
-### 🤖 **AI Chat Interface**
-- **Natural Language Processing**: Ask questions about patients in plain English
+### 🤖 **Agent Chat Interface**
+- **Natural Language Processing**: Ask questions about patients data and information
 - **Real-time Responses**: Get instant answers about patient status, vital signs, and alerts
-- **Smart Suggestions**: Pre-built query suggestions for common questions
-- **Contextual Understanding**: AI understands patient IDs, floor numbers, and medical conditions
+- **Context**: AI understands patient IDs, floor numbers, and medical conditions
 
 ### 📊 **Patient Management**
 - **Real-time Monitoring**: Automatic vital signs updates every 15 seconds
 - **Critical Alerts**: Instant notifications for critical patient conditions
-- **Floor Organization**: Patients organized by hospital floors
+- **Floor Organization**: Patients organized by hospital floors and organized by condition
 - **Historical Tracking**: Complete vital signs history for each patient
 
 ### 🗄️ **Database Integration**
-- **SQLite Database**: Persistent storage with proper schema
+- **SQLite Database**: Persistent storage with tracking patient data and being able to scale a larger batch of data
 - **Patient Records**: Complete patient information and medical history
 - **Alert Management**: Track and acknowledge critical condition alerts
 - **Vital Signs Logging**: Historical tracking of respiratory rate and airflow
@@ -38,13 +37,13 @@ The AI assistant can help you with:
 
 - **Backend**: Flask (Python)
 - **Database**: SQLite with custom schema
-- **AI Engine**: Custom NLP agent with patient data integration
+- **AI Engine**: Custom "Nurse" agent powered by Google's ADK kit with patient data integration
 - **Frontend**: HTML5, CSS3, JavaScript
 - **Real-time Updates**: Background threading for vital signs monitoring
 
 ## 🚀 **Getting Started**
 
-### Prerequisites
+### Necessities
 - Python 3.7+
 - pip package manager
 
@@ -63,8 +62,8 @@ python app.py
 The application will start on `http://localhost:5001`
 
 ### Login Credentials
-- **Username**: `admin`
-- **Password**: `password`
+- **Username**: `doctorHacks`
+- **Password**: `shellhacks2025`
 
 ## 📱 **Usage**
 
@@ -93,7 +92,7 @@ The application will start on `http://localhost:5001`
 
 ## 🏥 **Patient Data**
 
-The system comes pre-loaded with 8 sample patients across 5 floors:
+The system comes pre-loaded with 8 sample patients across 5 floors but can scale up to 50+ patients:
 - **Floor 1**: John Smith (Diabetes), Russell Wilson (Chicken Pox)
 - **Floor 2**: Sarah Johnson (Hypertension), Larry Bird (Respiratory Problems)
 - **Floor 3**: Mike Davis (Heart Disease), Kevin Durant (General Checkup)
@@ -108,24 +107,9 @@ The system automatically monitors:
 - **Real-time Notifications**: Instant alerts for critical conditions
 - **Alert Acknowledgment**: Track and manage alert responses
 
-## 🎯 **Perfect for Hackathons**
 
-This project demonstrates:
-- **AI Integration**: Custom NLP with medical data
-- **Real-time Systems**: Live monitoring and alerts
-- **Database Design**: Proper schema and relationships
-- **Modern UI/UX**: Professional chat interface
-- **Scalable Architecture**: Ready for production deployment
 
-## 🔮 **Future Enhancements**
-
-- Integration with Google Cloud AI Platform
-- Voice input/output capabilities
-- Mobile app development
-- Integration with hospital systems
-- Advanced analytics and reporting
-- Multi-language support
 
 ---
 
-**Built with ❤️ for healthcare innovation**
+**Built with ❤️ for healthcare innovation powered by Google Cloud**

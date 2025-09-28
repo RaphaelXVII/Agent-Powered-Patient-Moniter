@@ -3,7 +3,7 @@ from nurse_agent import NurseAgent
 
 app = Flask(__name__)
 
-# Initialize the nurse agent
+# Initializes the nurse agent
 nurse_agent = NurseAgent()
 
 # Patient routes
@@ -26,7 +26,7 @@ patients_data = [
     {"id": "P007", "name": "Larry Bird", "age": 72, "condition": "Respiratory Problems", "last_visit": "2024-01-05", "floor": 2, "respiratory_rate": 13, "airflow": 85},
     {"id": "P008", "name": "Kevin Durant", "age": 83, "condition": "General Checkup", "last_visit": "2024-01-05", "floor": 3, "respiratory_rate": 22, "airflow": 80}
 ]
-
+# returns the ventilation status if patients airflow or respiratory rate is off
 def get_ventilation_status(patient):
     if patient['respiratory_rate'] >= 26 or patient['airflow'] <= 59:
         return 'critical'
@@ -34,7 +34,7 @@ def get_ventilation_status(patient):
         return 'warning'
     else:
         return 'normal'
-
+#grabs the # of patients
 @app.route('/api/patients')
 def get_patients():
     return jsonify(patients_data)
@@ -53,7 +53,7 @@ def handle_patient_chat():
         if not patient_id:
             return jsonify({'error': 'No patient ID provided'}), 400
         
-        # Find the patient
+        # Finds the patient
         patient = None
         for p in patients_data:
             if p['id'] == patient_id:
@@ -73,7 +73,7 @@ def handle_patient_chat():
     except Exception as e:
         print(f"Error processing message: {e}")
         return jsonify({'message': 'Sorry, I encountered an error processing your request. Please try again.'}), 500
-
+# grabbing the patients ID's
 @app.route('/patient/<patient_id>')
 def patient_detail(patient_id):
     # Find the specific patient
