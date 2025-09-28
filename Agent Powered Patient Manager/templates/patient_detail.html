@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurse Assistant - {{ patient.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* Chat Interface Styles */
+        .chat-container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .chat-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .patient-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .back-button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f9f9f9;
+            border-bottom: 1px solid #eee;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 20px;
+            align-items: flex-end;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message.agent {
+            justify-content: flex-start;
+        }
+
+        .message-content {
+            max-width: 75%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            line-height: 1.6;
+            font-size: 1rem;
+            word-wrap: break-word;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .message.user .message-content {
+            background: #667eea;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.agent .message-content {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ccc;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0 12px;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background: #764ba2;
+        }
+
+        .message.agent .message-avatar {
+            background: #3498db;
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #eee;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .chat-form {
+            display: flex;
+            gap: 15px;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: #667eea;
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .send-button:hover:not(:disabled) {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .send-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            margin-top: -15px;
+            margin-bottom: 15px;
+            color: #888;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .typing-indicator.show {
+            opacity: 1;
+        }
+
+        .typing-indicator span {
+            animation: blink 1s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        .suggestion-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 0 20px;
+        }
+
+        .chip {
+            background: #e0e0e0;
+            color: #333;
+            padding: 10px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.2s ease;
+            border: none;
+        }
+
+        .chip:hover {
+            background: #d0d0d0;
+        }
+
+        .welcome-message {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>
+                🏥 Nurse Assistant
+                <span class="patient-badge">{{ patient.name }} ({{ patient.id }})</span>
+            </h2>
+            <button class="back-button" onclick="goBack()">← Back to Patients</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <!-- Messages will be appended here -->
+            <div class="message agent">
+                <div class="message-avatar">AI</div>
+                <div class="message-content">
+                    Hello! I'm your AI Nurse Assistant for {{ patient.name }}. I can help you with information about this patient's condition, vital signs, medical history, and care instructions. How can I assist you today?
+                </div>
+            </div>
+        </div>
+        <div class="typing-indicator" id="typingIndicator">
+            Nurse Assistant is typing<span>.</span><span>.</span><span>.</span>
+        </div>
+        <div class="suggestion-chips">
+            <button class="chip" onclick="sendSuggestion('What is this patient\\'s condition?')">Patient condition</button>
+            <button class="chip" onclick="sendSuggestion('Show me the vital signs')">Vital signs</button>
+            <button class="chip" onclick="sendSuggestion('What medications are needed?')">Medications</button>
+            <button class="chip" onclick="sendSuggestion('Care instructions')">Care instructions</button>
+            <button class="chip" onclick="sendSuggestion('When was the last visit?')">Last visit</button>
+        </div>
+        <div class="chat-input-area">
+            <form id="chatForm" class="chat-form">
+                <input type="text" id="messageInput" class="chat-input" placeholder="Ask about {{ patient.name }}...">
+                <button type="submit" id="sendButton" class="send-button">Send</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Store patient data for the AI agent
+const currentPatient = {{ patient | tojson }};
+
+// DOM elements
+const chatMessages = document.getElementById('chatMessages');
+const messageInput = document.getElementById('messageInput');
+const sendButton = document.getElementById('sendButton');
+const chatForm = document.getElementById('chatForm');
+const typingIndicator = document.getElementById('typingIndicator');
+
+// Chat functionality
+chatForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    sendMessage();
+});
+
+function sendMessage() {
+    const message = messageInput.value.trim();
+    if (!message) return;
+
+    // Add user message to chat
+    addMessage(message, 'user');
+
+    // Clear input and disable send button
+    messageInput.value = '';
+    sendButton.disabled = true;
+
+    // Show typing indicator
+    showTypingIndicator();
+
+    // Send message to server via HTTP POST
+    fetch('/api/patient-chat', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+            message: message,
+            patient_id: currentPatient.id
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideTypingIndicator();
+        addMessage(data.message, 'agent');
+        sendButton.disabled = false;
+        messageInput.focus();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        hideTypingIndicator();
+        addMessage('Sorry, I encountered an error. Please try again.', 'agent');
+        sendButton.disabled = false;
+        messageInput.focus();
+    });
+}
+
+function sendSuggestion(text) {
+    messageInput.value = text;
+    sendMessage();
+}
+
+function addMessage(content, sender) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}`;
+
+    const avatar = sender === 'user' ? 'You' : 'AI';
+    const messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+    messageContent.innerHTML = content.replace(/\n/g, '<br>');
+
+    const avatarDiv = document.createElement('div');
+    avatarDiv.className = 'message-avatar';
+    avatarDiv.textContent = avatar;
+
+    if (sender === 'user') {
+        messageDiv.appendChild(messageContent);
+        messageDiv.appendChild(avatarDiv);
+    } else {
+        messageDiv.appendChild(avatarDiv);
+        messageDiv.appendChild(messageContent);
+    }
+
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function showTypingIndicator() {
+    typingIndicator.classList.add('show');
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function hideTypingIndicator() {
+    typingIndicator.classList.remove('show');
+}
+
+function goBack() {
+    window.location.href = '/patients';
+}
+
+// Focus input on load
+messageInput.focus();
+</script>
+</body>
+</html>
