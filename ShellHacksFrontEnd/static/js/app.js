@@ -11,6 +11,14 @@ let isNotificationShowing = false;
 document.addEventListener('DOMContentLoaded', function() {
     // Check if we're on the patients page
     if (window.location.pathname === '/patients') {
+        // Set the username in the welcome message
+        const currentUserSpan = document.getElementById('current-user');
+        if (currentUserSpan) {
+            // Get username from localStorage or use default
+            const storedUsername = localStorage.getItem('currentUsername') || 'doctorHacks';
+            currentUserSpan.textContent = storedUsername;
+        }
+        
         loadPatients();
         setupPatientEventListeners();
         startAirflowUpdates();
@@ -31,17 +39,21 @@ function handleLogin() {
     }
     
     // Simple demo login
-    if (username === 'admin' && password === 'password') {
+    if (username === 'doctorHacks' && password === 'shellhacks2025') {
         currentUser = username;
+        // Store username in localStorage
+        localStorage.setItem('currentUsername', username);
         // Redirect to patients page instead of showing alert
         window.location.href = '/patients';
     } else {
-        alert('Invalid username or password. Try: admin/password');
+        alert('Invalid username or password. Try: doctorHacks/shellhacks2025');
     }
 }
 
 function handleLogout() {
     currentUser = null;
+    // Clear stored username
+    localStorage.removeItem('currentUsername');
     // Redirect back to login page
     window.location.href = '/';
 }
