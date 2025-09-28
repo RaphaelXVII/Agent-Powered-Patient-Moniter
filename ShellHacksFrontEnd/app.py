@@ -1,6 +1,10 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
+from nurse_agent import NurseAgent
 
 app = Flask(__name__)
+
+# Initialize the nurse agent
+nurse_agent = NurseAgent()
 
 # Patient routes
 @app.route('/')
@@ -34,6 +38,41 @@ def get_ventilation_status(patient):
 @app.route('/api/patients')
 def get_patients():
     return jsonify(patients_data)
+
+@app.route('/api/patient-chat', methods=['POST'])
+def handle_patient_chat():
+    """Handle chat messages for specific patients"""
+    try:
+        data = request.get_json()
+        message = data.get('message', '').strip()
+        patient_id = data.get('patient_id', '').strip()
+        
+        if not message:
+            return jsonify({'error': 'No message provided'}), 400
+        
+        if not patient_id:
+            return jsonify({'error': 'No patient ID provided'}), 400
+        
+        # Find the patient
+        patient = None
+        for p in patients_data:
+            if p['id'] == patient_id:
+                patient = p
+                break
+        
+        if not patient:
+            return jsonify({'error': 'Patient not found'}), 404
+        
+        print(f"Received message for {patient['name']}: {message}")
+        
+        # Process message with nurse agent
+        response = nurse_agent.process_message(message, patient)
+        
+        return jsonify({'message': response})
+        
+    except Exception as e:
+        print(f"Error processing message: {e}")
+        return jsonify({'message': 'Sorry, I encountered an error processing your request. Please try again.'}), 500
 
 @app.route('/patient/<patient_id>')
 def patient_detail(patient_id):

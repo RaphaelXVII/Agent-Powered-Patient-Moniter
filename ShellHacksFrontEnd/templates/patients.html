@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Manager - Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/static/css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 <div class="container">
@@ -38,9 +38,6 @@
                     <option value="5">Floor 5</option>
                 </select>
             </div>
-            <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Search patients by name or ID...">
-            </div>
         </div>
         <div id="patients-container">
             <!-- Patient cards will be loaded here -->
@@ -49,6 +46,6 @@
 
 </div>
 
-<script src="{{ url_for('static', filename='css/static/static/js/app.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>
